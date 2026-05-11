@@ -24,3 +24,8 @@ class Service(BaseModel):
     serviceName:str
     serviceAddress:str
     serviceDescription:str
+    serviceType:str
+    
+class SignInSchema(BaseModel):
+    email:str
+    password:str
