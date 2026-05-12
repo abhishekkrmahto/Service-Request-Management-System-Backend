@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from schemas import Service,UserSchema,SignInSchema
+from schemas import Service,UserSchema,SignInSchema,ServiceManSchema
 import httpx
 
 router = APIRouter()
@@ -52,4 +52,25 @@ async def signin_user(user:SignInSchema):
             }
         )
         print("USER CREATION DONE !!")
+        return response.json()
+
+@router.post("/registerServiceMan")
+async def register_serviceMan(serviceman:ServiceManSchema):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{SPRING_URL}/registerServiceMan",
+            json={
+                "name":serviceman.name,
+                "service":serviceman.service,
+                "slot":serviceman.slot,
+                "assignedServices":serviceman.assignedServices,
+                "phone":serviceman.phone,
+                "email":serviceman.email,
+                "password":serviceman.password,
+                "serviceManCode":serviceman.serviceManCode,
+                "serviceType":serviceman.serviceType 
+            }
+        )
+        
+        print("Service man created !!")
         return response.json()

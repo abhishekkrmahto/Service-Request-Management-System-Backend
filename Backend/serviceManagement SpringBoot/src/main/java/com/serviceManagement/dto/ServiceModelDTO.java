@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceModelDTO {
+    Long id;
     String serviceName;
     String serviceAddress;
     String serviceDescription;
     String serviceType;
+
+    public ServiceModelDTO(String serviceName, String serviceAddress, String serviceDescription, String serviceType) {
+    }
 }
