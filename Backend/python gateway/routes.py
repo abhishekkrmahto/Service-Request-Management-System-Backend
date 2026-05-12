@@ -6,21 +6,27 @@ router = APIRouter()
 
 SPRING_URL = "http://localhost:8081"
 
-
-@router.put("/createService")
+@router.post("/createService")
 async def create_Service(service: Service):
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{SPRING_URL}/createService",
             json={
+                "userEmail":service.userEmail,
                 "serviceName": service.serviceName,
                 "serviceAddress": service.serviceAddress,
                 "serviceDescription": service.serviceDescription,
-                "serviceType":service.serviceType
+                "serviceType":service.serviceType,
+                "priority":service.priority,
+                "status":service.status,
+                "createdAt":service.createdAt,
+                "updatedAt":service.updatedAt,
+                "assignedTo":service.assignedTo,
             }
         )
 
         print("SERVICE CREATED BY USER ", response)
+        print(response.text)
 
         return response.json()
     
@@ -35,7 +41,8 @@ async def register_user(user:UserSchema):
                 "address":user.address,
                 "email":user.email,
                 "password":user.password,
-                "assignedServiceman":user.assignedServiceman
+                "assignedServiceman":user.assignedServiceman,
+                "role":"user"
             }
         )
         print("USER CREATION DONE !!")
@@ -68,7 +75,8 @@ async def register_serviceMan(serviceman:ServiceManSchema):
                 "email":serviceman.email,
                 "password":serviceman.password,
                 "serviceManCode":serviceman.serviceManCode,
-                "serviceType":serviceman.serviceType 
+                "serviceType":serviceman.serviceType,
+                "role":"serviceman"
             }
         )
         

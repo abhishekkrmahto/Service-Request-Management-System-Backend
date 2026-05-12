@@ -19,10 +19,16 @@ public class CreateServiceImplementation implements CreateServiceService {
         ServiceModel saved = serviceRepository.save(serviceModel);
 
         return new ServiceModelDTO(
+                saved.getUserEmail(),
                 saved.getServiceName(),
                 saved.getServiceAddress(),
                 saved.getServiceDescription(),
-                saved.getServiceType()
+                saved.getServiceType(),
+                saved.getPriority(),
+                saved.getStatus(),
+                saved.getCreatedAt(),
+                saved.getUpdatedAt(),
+                saved.getAssignedTo()
         );
     }
 }

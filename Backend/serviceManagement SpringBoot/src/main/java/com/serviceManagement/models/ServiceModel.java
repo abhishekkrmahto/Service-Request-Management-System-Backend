@@ -19,11 +19,14 @@ public class ServiceModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    String userEmail;
     String serviceName;
     String serviceAddress;
     String serviceDescription;
     String serviceType;
-
-    public ServiceModel(String serviceName, String serviceAddress, String serviceDescription, String serviceType) {
-    }
+    String priority;
+    String status;
+    String createdAt;
+    String updatedAt;
+    String assignedTo;
 }
