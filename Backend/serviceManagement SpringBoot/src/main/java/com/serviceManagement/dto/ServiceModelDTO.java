@@ -25,6 +25,16 @@ public class ServiceModelDTO {
     String assignedTo;
 
     public ServiceModelDTO(String userEmail, String serviceName, String serviceAddress, String serviceDescription, String serviceType,String priority,String status,String createdAt,String updatedAt,String assignedTo) {
+        this.userEmail = userEmail;
+        this.serviceName = serviceName;
+        this.serviceAddress = serviceAddress;
+        this.serviceDescription = serviceDescription;
+        this.serviceType = serviceType;
+        this.priority = priority;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.assignedTo = assignedTo;
     }
 
 }

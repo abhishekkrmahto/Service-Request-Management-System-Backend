@@ -4,11 +4,13 @@ import com.serviceManagement.dto.ServiceModelDTO;
 import com.serviceManagement.models.ServiceModel;
 import com.serviceManagement.service.CreateServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @RestController
+@CrossOrigin(origins = "*")
 public class CreateServiceController {
 
     @Autowired
@@ -22,5 +24,11 @@ public class CreateServiceController {
         ServiceModelDTO s  = createServiceService.createService(service);
 
         return s;
+    }
+
+
+    @GetMapping("/getServices")
+    public List<ServiceModelDTO> getServices(){
+        return  createServiceService.getServices();
     }
 }

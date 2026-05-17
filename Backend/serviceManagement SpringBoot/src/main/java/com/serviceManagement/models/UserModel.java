@@ -27,4 +27,5 @@ public class UserModel {
     private String password;
     private String assignedServiceman;
     private List<String> history; //STORE:- service name and date
+    private String role;
 }

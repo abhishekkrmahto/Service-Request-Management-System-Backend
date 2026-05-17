@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const COLORS = {
   bg: "#0a0f1e",
@@ -307,22 +309,48 @@ function NavItem({ icon, label, active, onClick }) {
   );
 }
 
+const EMPTY_FORM = {
+  service: "",
+  description: "",
+  priority: "medium",
+  address: "",
+  userEmail: "",
+};
+
 export default function UserPage({ onLogout }) {
   const [activeTab, setActiveTab] = useState("raise"); // "raise" | "my_requests"
   const [requests, setRequests] = useState(INIT_REQUESTS);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [form, setForm] = useState({
-    service: "",
-    description: "",
-    priority: "medium",
-    address: "",
-    userEmail: "",
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [focusField, setFocusField] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [detailReq, setDetailReq] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    // --------------------------------DATA FETCHING--------------------------
+
+    try {
+      if (token) {
+        axios
+          .get(`http://127.0.0.1:8000/userInformation/${token}`)
+          .then((response) => {
+            setUser(response.data);
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.error("Error sending data:", error);
+          });
+      }
+      console.log(jwtDecode(localStorage.getItem("token")));
+    } catch (err) {
+      localStorage.removeItem("token");
+    }
+  }, []);
 
   const handleFormChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -341,7 +369,7 @@ export default function UserPage({ onLogout }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userEmail:form.userEmail,
+          userEmail: user?.email,
           serviceName: form.service,
           serviceAddress: form.address,
           serviceDescription: form.description,
@@ -378,11 +406,18 @@ export default function UserPage({ onLogout }) {
         address: form.address,
       };
 
-      console.log(newReq);
-      setSubmitting(true);
-      setTimeout(() => {
-        setSubmitting(false);
-      }, 1000);
+      // Add new request to list
+      setRequests((prev) => [newReq, ...prev]);
+
+      // Reset form and category
+      setForm(EMPTY_FORM);
+      setSelectedCategory(null);
+
+      // Show success message and auto-clear after 4 seconds
+      setSuccessMsg(
+        `Your service request "${newReq.service}" has been submitted successfully! We'll assign a serviceman soon.`
+      );
+      setTimeout(() => setSuccessMsg(""), 4000);
     } catch (error) {
       console.log("API ERROR:", error);
     } finally {
@@ -495,14 +530,14 @@ export default function UserPage({ onLogout }) {
                 fontSize: "0.85rem",
               }}
             >
-              AR
+              USER
             </div>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.88rem" }}>
-                Arjun Reddy
+                {user?.name}
               </div>
-              <div style={{ fontSize: "0.72rem", color: COLORS.muted }}>
-                arjun@example.com
+              <div style={{ fontSize: "0.65rem", color: COLORS.muted }}>
+                {user?.email}
               </div>
             </div>
           </div>
@@ -797,8 +832,8 @@ export default function UserPage({ onLogout }) {
                       <input
                         name="userEmail"
                         required
-                        placeholder={`e.g. user@gmail.com`}
-                        value={form.userEmail}
+                        value={form.userEmail || user?.email || ""}
+                        placeholder={`${user?.email}`}
                         onChange={handleFormChange}
                         onFocus={() => setFocusField("userEmail")}
                         onBlur={() => setFocusField("")}

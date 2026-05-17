@@ -1,10 +1,13 @@
 from fastapi import APIRouter
 from schemas import Service,UserSchema,SignInSchema,ServiceManSchema
 import httpx
+from pydantic import BaseModel
 
 router = APIRouter()
 
 SPRING_URL = "http://localhost:8081"
+
+#----------------------POST APIs-----------------------------
 
 @router.post("/createService")
 async def create_Service(service: Service):
@@ -48,37 +51,69 @@ async def register_user(user:UserSchema):
         print("USER CREATION DONE !!")
         return response.json()
     
-@router.post("/signinUser")
-async def signin_user(user:SignInSchema):
+@router.post("/signinAdmin")
+async def signin_admin(user: SignInSchema):
     async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{SPRING_URL}/signinAdmin",
+            json={
+                "email": user.email,
+                "password": user.password,\
+                "role":user.role
+            }
+        )
+
+        return response.json()
+    
+@router.post("/signinUser")
+async def signin_User(user: SignInSchema):
+
+    async with httpx.AsyncClient() as client:
+
         response = await client.post(
             f"{SPRING_URL}/signinUser",
             json={
-                "email":user.email,
-                "password":user.password,
+                "email": user.email,
+                "password": user.password,
+                "role": user.role
             }
         )
-        print("USER CREATION DONE !!")
+
         return response.json()
 
-@router.post("/registerServiceMan")
-async def register_serviceMan(serviceman:ServiceManSchema):
+
+@router.post("/signinServiceMan")
+async def signin_serviceman(user: SignInSchema):
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"{SPRING_URL}/registerServiceMan",
+            f"{SPRING_URL}/signinServiceMan",
             json={
-                "name":serviceman.name,
-                "service":serviceman.service,
-                "slot":serviceman.slot,
-                "assignedServices":serviceman.assignedServices,
-                "phone":serviceman.phone,
-                "email":serviceman.email,
-                "password":serviceman.password,
-                "serviceManCode":serviceman.serviceManCode,
-                "serviceType":serviceman.serviceType,
-                "role":"serviceman"
+                "email": user.email,
+                "password": user.password,
+                "role":user.role
             }
         )
-        
-        print("Service man created !!")
+
         return response.json()
+    
+    
+#----------------------GET APIs-----------------------------
+
+# @router.get("/getServices/{email}")
+# async def get_services(email: str):
+#     async with httpx.AsyncClient() as client:
+#         response = await client.get(
+#             f"{SPRING_URL}/services/user/{email}"
+#         )
+
+#     return response.json()
+
+
+@router.get("/userInformation/{token}")
+async def get_services(token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{SPRING_URL}/userInformation/{token}"
+        )
+
+    return response.json()

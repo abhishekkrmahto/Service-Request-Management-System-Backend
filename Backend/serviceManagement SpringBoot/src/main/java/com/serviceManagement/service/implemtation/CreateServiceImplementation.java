@@ -7,6 +7,9 @@ import com.serviceManagement.service.CreateServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CreateServiceImplementation implements CreateServiceService {
 
@@ -30,5 +33,16 @@ public class CreateServiceImplementation implements CreateServiceService {
                 saved.getUpdatedAt(),
                 saved.getAssignedTo()
         );
+    }
+
+    @Override
+    public List<ServiceModelDTO> getServices() {
+        List<ServiceModel> responseOfModel = serviceRepository.findAll();
+        List<ServiceModelDTO>responseOfModelDTO = new ArrayList<>();
+        for(ServiceModel s:responseOfModel){
+            ServiceModelDTO serviceModelDTO = new ServiceModelDTO(s.getUserEmail(),s.getServiceName(),s.getServiceAddress(),s.getServiceDescription(),s.getServiceType(),s.getPriority(),s.getStatus(),s.getCreatedAt(),s.getUpdatedAt(),s.getAssignedTo());
+            responseOfModelDTO.add(serviceModelDTO);
+        }
+        return responseOfModelDTO;
     }
 }
