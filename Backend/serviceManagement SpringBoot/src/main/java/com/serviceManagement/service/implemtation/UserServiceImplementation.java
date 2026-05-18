@@ -1,14 +1,17 @@
 package com.serviceManagement.service.implemtation;
 
 import com.serviceManagement.dto.UserDTO;
+import com.serviceManagement.models.ServiceModel;
 import com.serviceManagement.models.SignInUserModel;
 import com.serviceManagement.models.UserModel;
+import com.serviceManagement.repository.ServiceRepository;
 import com.serviceManagement.repository.UserRepository;
 import com.serviceManagement.service.JwtService;
 import com.serviceManagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,10 @@ public class UserServiceImplementation implements UserService {
 
     @Autowired
     JwtService jwtService;
+
+    @Autowired
+    ServiceRepository serviceRepository;
+
 
     @Override
     public Map<String, Object> registerUser(UserModel user) {
@@ -78,5 +85,13 @@ public class UserServiceImplementation implements UserService {
             response.put("message", e.getMessage());
         }
         return response;
+    }
+
+    @Override
+    public List<ServiceModel> getServices(String email) {
+
+        List<ServiceModel> services = serviceRepository.getServicesByEmail(email);
+
+        return services.isEmpty() ? Collections.emptyList() : services;
     }
 }

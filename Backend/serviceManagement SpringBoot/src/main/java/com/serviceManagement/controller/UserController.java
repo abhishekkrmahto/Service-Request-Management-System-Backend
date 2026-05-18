@@ -1,5 +1,6 @@
 package com.serviceManagement.controller;
 
+import com.serviceManagement.models.ServiceModel;
 import com.serviceManagement.models.SignInUserModel;
 import com.serviceManagement.models.UserModel;
 import com.serviceManagement.service.UserService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,5 +31,11 @@ public class UserController {
     @GetMapping("/userInformation/{token}")
     public Object getUser(@PathVariable String token){ // path variable for url
         return userService.uinfo(token);
+    }
+
+
+    @GetMapping("/getServices/{email}")
+    public List<ServiceModel> getServices(@PathVariable String email){
+        return userService.getServices(email);
     }
 }

@@ -99,18 +99,18 @@ async def signin_serviceman(user: SignInSchema):
     
 #----------------------GET APIs-----------------------------
 
-# @router.get("/getServices/{email}")
-# async def get_services(email: str):
-#     async with httpx.AsyncClient() as client:
-#         response = await client.get(
-#             f"{SPRING_URL}/services/user/{email}"
-#         )
+@router.get("/getServices/{email}")
+async def get_services(email: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{SPRING_URL}/getServices/{email}"
+        )
 
-#     return response.json()
+    return response.json()
 
 
 @router.get("/userInformation/{token}")
-async def get_services(token: str):
+async def get_userInformation(token: str):
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"{SPRING_URL}/userInformation/{token}"

@@ -319,7 +319,7 @@ const EMPTY_FORM = {
 
 export default function UserPage({ onLogout }) {
   const [activeTab, setActiveTab] = useState("raise"); // "raise" | "my_requests"
-  const [requests, setRequests] = useState(INIT_REQUESTS);
+  const [requests, setRequests] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [focusField, setFocusField] = useState("");
@@ -332,21 +332,45 @@ export default function UserPage({ onLogout }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // --------------------------------DATA FETCHING--------------------------
-
     try {
       if (token) {
         axios
           .get(`http://127.0.0.1:8000/userInformation/${token}`)
-          .then((response) => {
+          .then(async (response) => {
             setUser(response.data);
-            console.log(response.data);
+
+            const email = response.data.email;
+
+            const serviceResponse = await axios.get(
+              `http://127.0.0.1:8000/getServices/${email}`,
+            );
+
+            console.log(serviceResponse.data);
+
+            const formattedServices = serviceResponse.data.map((s) => ({
+              id: s.id,
+              service: s.serviceName,
+              category: s.serviceType,
+              description: s.serviceDescription,
+              status: s.status,
+              priority:
+                s.priority === "1"
+                  ? "low"
+                  : s.priority === "2"
+                    ? "medium"
+                    : "high",
+              createdAt: s.createdAt,
+              updatedAt: s.updatedAt,
+              assignedTo: s.assignedTo,
+              address: s.serviceAddress,
+            }));
+
+            setRequests(formattedServices);
           })
           .catch((error) => {
-            console.error("Error sending data:", error);
+            console.error("Error:", error);
           });
       }
-      console.log(jwtDecode(localStorage.getItem("token")));
     } catch (err) {
       localStorage.removeItem("token");
     }
@@ -415,7 +439,7 @@ export default function UserPage({ onLogout }) {
 
       // Show success message and auto-clear after 4 seconds
       setSuccessMsg(
-        `Your service request "${newReq.service}" has been submitted successfully! We'll assign a serviceman soon.`
+        `Your service request "${newReq.service}" has been submitted successfully! We'll assign a serviceman soon.`,
       );
       setTimeout(() => setSuccessMsg(""), 4000);
     } catch (error) {
@@ -1075,8 +1099,6 @@ export default function UserPage({ onLogout }) {
                 {[
                   ["all", "All"],
                   ["pending", "Pending"],
-                  ["assigned", "Assigned"],
-                  ["in_progress", "In Progress"],
                   ["completed", "Completed"],
                 ].map(([f, label]) => (
                   <button

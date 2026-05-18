@@ -5,7 +5,7 @@ import ServicemanPage from "./pages/ServicemanPage";
 import UserPage from "./pages/UserPage";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState("user"); // "home" | "admin" | "serviceman" | "user"
+  const [currentPage, setCurrentPage] = useState("home"); // "home" | "admin" | "serviceman" | "user"
   const [loggedInRole, setLoggedInRole] = useState(null);
 
   const handleLogin = (role) => {
