@@ -58,7 +58,7 @@ async def signin_admin(user: SignInSchema):
             f"{SPRING_URL}/signinAdmin",
             json={
                 "email": user.email,
-                "password": user.password,\
+                "password": user.password,
                 "role":user.role
             }
         )
@@ -104,6 +104,15 @@ async def get_services(email: str):
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"{SPRING_URL}/getServices/{email}"
+        )
+
+    return response.json()
+
+@router.get("/getAllServices")
+async def get_all_services():
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{SPRING_URL}/getAllServices"
         )
 
     return response.json()

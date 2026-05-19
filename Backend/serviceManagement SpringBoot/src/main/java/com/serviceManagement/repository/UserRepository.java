@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserModel,Long> {
-    @Query("select U from UserModel U where U.email=:email")
-    UserModel validateCredentials(@Param("email") String email , @Param("password") String password);
+    @Query("select U from UserModel U where U.email=:email and U.password=:password and U.role=:role")
+    UserModel validateCredentials(@Param("email") String email,
+                                  @Param("password") String password,@Param("role") String role);
 
     @Query("select U from UserModel U where U.email=:email")
     UserModel checkByEmail(@Param("email") String email);

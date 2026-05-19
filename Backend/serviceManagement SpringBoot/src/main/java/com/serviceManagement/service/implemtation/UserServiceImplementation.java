@@ -43,7 +43,7 @@ public class UserServiceImplementation implements UserService {
         // validate first
         Map<String,Object>response = new HashMap<>();
         try{
-           UserModel u = (UserModel) userRepository.validateCredentials(user.getEmail(),user.getPassword());
+           UserModel u = (UserModel) userRepository.validateCredentials(user.getEmail(),user.getPassword(),user.getRole());
             if(u!=null){
                 response.put("code",200);
                 response.put("jwt",jwtService.generateJWT(u.getEmail(),u.getPassword()));
